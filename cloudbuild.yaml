@@ -3,7 +3,6 @@ steps:
   - name: 'docker/compose:1.26.2'
     args:
       - 'build'
-      - '-t'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service1:${SHORT_SHA}'
       - '-f'
       - './browser-use-dev/docker-compose.yml'
@@ -14,7 +13,6 @@ steps:
   - name: 'docker/compose:1.26.2'
     args:
       - 'build'
-      - '-t'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service2:${SHORT_SHA}'
       - '-f'
       - './n8n/docker-compose.yml'
@@ -25,7 +23,6 @@ steps:
   - name: 'docker/compose:1.26.2'
     args:
       - 'build'
-      - '-t'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
       - '-f'
       - './planner-adk/docker-compose.yml'
@@ -35,7 +32,6 @@ steps:
   - name: 'docker/compose:1.26.2'
     args:
       - 'build'
-      - '-t'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
       - '-f'
       - './planner-backend/docker-compose.yml'
