@@ -1,16 +1,23 @@
 steps:
+  - name: gcr.io/cloud-builders/docker
+    entrypoint: bash
+    args:
+    - -c
+    - |
+      gcloud auth configure-docker ${_REGION}-docker.pkg.dev --quiet
+    id: 'auth-docker'
   # Build browser-use-dev
   - name: 'docker/compose:1.29.2'
     args: ['-f', 'docker-compose.yml', 'build']
-    dir: 'browser-use-dev'
-    id: 'build-browser-use'
+    dir: 'n8n'
+    id: 'n8n'
     # Push browser-use image
   # Push browser-use-dev
   - name: 'docker/compose:1.29.2'
     args: ['-f', 'docker-compose.yml', 'push']
-    dir: 'browser-use-dev'
-    id: 'push-browser-use'
-    waitFor: ['build-browser-use']
+    dir: 'n8n'
+    id: 'push-n8n'
+    waitFor: ['n8n']
   # # Build Image 1
   # - name: 'docker/compose:1.26.2'
   #   args:
