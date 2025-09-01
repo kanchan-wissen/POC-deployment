@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+    image: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}
+    container_name: browser-use-api
+    env_file: ./.env
+    volumes:
+      - ./app/extensions/capsolver:/app/extensions/capsolver
+    ports:
+      - "8000:8000"
+      - "5901-5999:5901-5999"
+      - "6081-6199:6081-6199"
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    logging:
+      driver: "none"
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+
+volumes:
+  mongo_data:
+
