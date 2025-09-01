@@ -1,11 +1,11 @@
 steps:
-  - name: gcr.io/cloud-builders/docker
-    entrypoint: bash
-    args:
-    - -c
-    - |
-      gcloud auth configure-docker ${_REGION}-docker.pkg.dev --quiet
-    id: 'auth-docker'
+  # - name: gcr.io/cloud-builders/docker
+  #   entrypoint: bash
+  #   args:
+  #   - -c
+  #   - |
+  #     gcloud auth configure-docker ${_REGION}-docker.pkg.dev --quiet
+  #   id: 'auth-docker'
   # Build browser-use-dev
   - name: 'docker/compose:1.29.2'
     args: ['-f', 'docker-compose.yml', 'build']
