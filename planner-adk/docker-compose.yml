@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  customer-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: customer-agent
+    env_file:
+      - .env
+    environment:
+      BASE_URL: ${BASE_URL:-http://host.docker.internal:8001/api/tools}
+    ports:
+      - "8002:8002"
+    restart: unless-stopped

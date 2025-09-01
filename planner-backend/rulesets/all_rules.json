@@ -1,0 +1,38 @@
+{
+  "350007": {
+    "type": "object",
+    "properties": {
+      "response": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "payerid": { "type": "string", "const": "350007" },
+            "requestid": { "type": "string", "minLength": 1 },
+            "cptcodes": { "type": "string", "pattern": "^(71271|71250|71260)$" }
+          },
+          "required": ["payerid", "requestid", "cptcodes"]
+        }
+      }
+    },
+    "required": ["response"]
+  },
+  "123456": {
+    "type": "object",
+    "properties": {
+      "response": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "payerid": { "type": "string", "const": "123456" },
+            "requestid": { "type": "string", "minLength": 1 },
+            "appointmentdate": { "type": "string", "pattern": "^\\d{2}/\\d{2}/\\d{4}$" }
+          },
+          "required": ["payerid", "requestid", "appointmentdate"]
+        }
+      }
+    },
+    "required": ["response"]
+  }
+}

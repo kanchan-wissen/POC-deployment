@@ -1,0 +1,57 @@
+services:
+  preauth-api:
+    build:
+      context: .
+      dockerfile: dockerfile
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - "8001:8001"
+    command: python main.py
+    depends_on:
+      - mongo
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MONGO_URI=mongodb://mongo:27017
+      - MONGO_DB_NAME=unified_db
+      - N8N_WEBHOOK_URL=http://host.docker.internal:5678/webhook/preauth
+      - BASE_URL=http://host.docker.internal:8001
+      - DEBUG=True
+    networks:
+      - preauth-network
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo-preauth
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=unified_db
+    networks:
+      - preauth-network
+
+  # Optional: MongoDB Admin UI
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express-preauth
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+    depends_on:
+      - mongo
+    networks:
+      - preauth-network
+
+networks:
+  preauth-network:
+    driver: bridge
+
+volumes:
+  mongo-data:

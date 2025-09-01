@@ -1,0 +1,7 @@
+fastapi[standard]
+google-adk
+uvicorn
+python-dotenv
+google-cloud-pubsub
+httpx
+pydantic
