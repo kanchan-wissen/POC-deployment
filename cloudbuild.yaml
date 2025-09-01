@@ -1,6 +1,6 @@
 steps:
   # Build Image 1
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'docker/compose:1.26.2'
     args:
       - 'build'
       - '-t'
@@ -11,7 +11,7 @@ steps:
     id: 'build-browser-use'
 
   # Build Image 2
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'docker/compose:1.26.2'
     args:
       - 'build'
       - '-t'
@@ -22,7 +22,7 @@ steps:
     id: 'build-n8n'
 
   # Build Image 3
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'docker/compose:1.26.2'
     args:
       - 'build'
       - '-t'
@@ -32,7 +32,7 @@ steps:
       - './planner-adk'
     id: 'build-planner-adk'
     # Build Image 3
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'docker/compose:1.26.2'
     args:
       - 'build'
       - '-t'
@@ -43,7 +43,7 @@ steps:
     id: 'build-planner-backend'
 
   # Push Image 1 to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'docker/compose:1.26.2'
     args:
       - 'push'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service1:${SHORT_SHA}'
@@ -51,7 +51,7 @@ steps:
     waitFor: ['build-browser-use']
 
   # Push Image 2 to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'docker/compose:1.26.2'
     args:
       - 'push'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service2:${SHORT_SHA}'
@@ -59,14 +59,14 @@ steps:
     waitFor: ['build-n8n']
 
   # Push Image 3 to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'docker/compose:1.26.2'
     args:
       - 'push'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
     id: 'push-planner-adk'
     waitFor: ['build-planner-adk']
     # Push Image 3 to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'docker/compose:1.26.2'
     args:
       - 'push'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
