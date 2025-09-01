@@ -6,10 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: customer-agent
-    env_file:
-      - .env
     environment:
-      BASE_URL: ${BASE_URL:-http://host.docker.internal:8001/api/tools}
+      GOOGLE_GENAI_USE_VERTEXAI: ${GOOGLE_GENAI_USE_VERTEXAI}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      BASE_URL: ${BASE_URL}
     ports:
       - "8002:8002"
     restart: unless-stopped

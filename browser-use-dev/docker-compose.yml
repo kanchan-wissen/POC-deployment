@@ -5,7 +5,23 @@ services:
     build:
       context: .
     container_name: browser-use-api
-    env_file: ./.env
+    environment:
+      - OPENAI_ENDPOINT=${OPENAI_ENDPOINT}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MONGO_URI=${MONGO_URI}
+      - MONGO_DB_NAME=${MONGO_DB_NAME}
+      - BASE_URL=${BASE_URL}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING}
+      - BLOB_CONTAINER_NAME=${BLOB_CONTAINER_NAME}
+      - DEFAULT_LLM=${DEFAULT_LLM}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - CAP_SOLVER_API=${CAP_SOLVER_API}
+      - ALGORITHM=${ALGORITHM}
+      - SECRET_KEY=${SECRET_KEY}
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      - AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
     volumes:
       - ./app/extensions/capsolver:/app/extensions/capsolver
     ports:
@@ -25,7 +41,5 @@ services:
     volumes:
       - mongo_data:/data/db
 
-
 volumes:
   mongo_data:
-

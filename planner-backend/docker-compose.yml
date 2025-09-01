@@ -15,9 +15,9 @@ services:
       - PYTHONUNBUFFERED=1
       - MONGO_URI=mongodb://mongo:27017
       - MONGO_DB_NAME=unified_db
-      - N8N_WEBHOOK_URL=http://host.docker.internal:5678/webhook/preauth
-      - BASE_URL=http://host.docker.internal:8001
-      - DEBUG=True
+      - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL}
+      - BASE_URL=${BASE_URL}
+      - DEBUG=${DEBUG}
     networks:
       - preauth-network
 
