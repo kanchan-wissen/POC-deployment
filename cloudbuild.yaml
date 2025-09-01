@@ -79,7 +79,7 @@ steps:
 #       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
 #     id: 'push-planner-backend'
 #     waitFor: ['build-planner-backend']
-# options:
-#   logging: CLOUD_LOGGING_ONLY
+options:
+  logging: CLOUD_LOGGING_ONLY
 
   
