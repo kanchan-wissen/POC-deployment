@@ -3,14 +3,14 @@ steps:
   - name: 'docker/compose:1.29.2'
     args:
       - '-f'
-      - './browser-use-dev/docker-compose.yml'
+      - 'browser-use-dev/docker-compose.yml'
       - 'build'
     id: 'build-browser-use'
     # Push browser-use image
   - name: 'docker/compose:1.29.2'
     args:
       - '-f'
-      - './browser-use-dev/docker-compose.yml'
+      - 'browser-use-dev/docker-compose.yml'
       - 'push'
     id: 'push-browser-use'
     waitFor: ['build-browser-use']
