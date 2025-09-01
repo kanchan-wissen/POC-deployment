@@ -2,9 +2,9 @@ steps:
   # Build Image 1
   - name: 'docker/compose:1.26.2'
     args:
+      - 'pwd'
       - 'build'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service1:${SHORT_SHA}'
-      - 'pwd'
       - '-f'
       - './browser-use-dev/docker-compose.yaml'
       - './browser-use-dev'
