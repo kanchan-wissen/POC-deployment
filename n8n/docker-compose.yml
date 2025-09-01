@@ -33,7 +33,7 @@ services:
 
   n8n:
     # image: salonigupta19/n8n-custom:v1
-    image: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}
+    image: us-central1-docker.pkg.dev/agentic-ai-dev-wissen/agentic-prior-artifact-repository/n8n:${SHORT_SHA}
     container_name: n8n
     environment:
       - DB_TYPE=${DB_TYPE}
