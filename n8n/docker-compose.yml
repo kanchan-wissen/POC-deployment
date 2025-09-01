@@ -33,7 +33,7 @@ services:
 
   n8n:
     # image: salonigupta19/n8n-custom:v1
-    image: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}
+    image: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}
     container_name: n8n
     environment:
       - DB_TYPE=${DB_TYPE}
