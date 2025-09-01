@@ -5,7 +5,6 @@ steps:
       - 'pwd'
       - 'build'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service1:${SHORT_SHA}'
-      - '-f'
       - './browser-use-dev/docker-compose.yaml'
       - './browser-use-dev'
     id: 'build-browser-use'
@@ -15,7 +14,6 @@ steps:
     args:
       - 'build'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service2:${SHORT_SHA}'
-      - '-f'
       - './n8n/docker-compose.yml'
       - './n8n'
     id: 'build-n8n'
@@ -25,7 +23,6 @@ steps:
     args:
       - 'build'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
-      - '-f'
       - './planner-adk/docker-compose.yml'
       - './planner-adk'
     id: 'build-planner-adk'
@@ -34,7 +31,6 @@ steps:
     args:
       - 'build'
       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
-      - '-f'
       - './planner-backend/docker-compose.yml'
       - './planner-backend'
     id: 'build-planner-backend'
