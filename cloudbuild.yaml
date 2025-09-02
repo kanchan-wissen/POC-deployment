@@ -3,7 +3,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service1:${SHORT_SHA}'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}'
       - '-f'
       - 'browser-use-dev/Dockerfile'
       - './browser-use-dev'
@@ -14,11 +14,11 @@ steps:
   #   args:
   #     - 'build'
   #     - '-t'
-  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service2:${SHORT_SHA}'
+  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}'
   #     - '-f'
-  #     - './service2/Dockerfile'
-  #     - './service2'
-  #   id: 'build-service2'
+  #     - 'n8n/Dockerfile'
+  #     - './n8n'
+  #   id: 'build-n8n'
 
   # # Build Image 3
   # - name: 'gcr.io/cloud-builders/docker'
@@ -27,15 +27,25 @@ steps:
   #     - '-t'
   #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
   #     - '-f'
-  #     - './service3/Dockerfile'
-  #     - './service3'
-  #   id: 'build-service3'
+  #     - 'planner-adk/Dockerfile'
+  #     - './planner-adk'
+  #   id: 'build-planner-adk'
+  #  # Build Image 4
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args:
+  #     - 'build'
+  #     - '-t'
+  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
+  #     - '-f'
+  #     - 'planner-backend/Dockerfile'
+  #     - './planner-backend'
+  #   id: 'build-planner-backend'
 
   # Push Image 1 to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service1:${SHORT_SHA}'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}'
     id: 'browser-use'
     waitFor: ['build-browser-use']
 
@@ -43,17 +53,38 @@ steps:
   # - name: 'gcr.io/cloud-builders/docker'
   #   args:
   #     - 'push'
-  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service2:${SHORT_SHA}'
-  #   id: 'push-service2'
-  #   waitFor: ['build-service2']
+  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}'
+  #   id: 'push-n8n'
+  #   waitFor: ['build-n8n']
 
   # # Push Image 3 to Artifact Registry
   # - name: 'gcr.io/cloud-builders/docker'
   #   args:
   #     - 'push'
-  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
-  #   id: 'push-service3'
-  #   waitFor: ['build-service3']
+  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}'
+  #   id: 'push-planner-adk'
+  #   waitFor: ['build-planner-adk']
+  #   # Push Image 4 to Artifact Registry
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args:
+  #     - 'push'
+  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend:${SHORT_SHA}'
+  #   id: 'push-planner-backend'
+  #   waitFor: ['build-planner-backend']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    id: 'deploy-browser-use'
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - agentic-prior-cloud-run
+      - --image
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}
+      - --platform
+      - managed
+      - --region
+      - us-central1
 logsBucket: 'agentic-prior-storage-bucket'
 options:
   logging: GCS_ONLY
