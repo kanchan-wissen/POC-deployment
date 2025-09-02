@@ -111,7 +111,7 @@ steps:
     args:
       - 'run'
       - 'services'
-      - 'agentic-prior-cloud-run'
+      - 'replace'
       - 'service.yaml'
       - '--region'
       - '${_REGION}'
