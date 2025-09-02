@@ -9,16 +9,16 @@ steps:
       - './browser-use-dev'
     id: 'build-browser-use'
 
-  # # Build Image 2
-  # - name: 'gcr.io/cloud-builders/docker'
-  #   args:
-  #     - 'build'
-  #     - '-t'
-  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}'
-  #     - '-f'
-  #     - 'n8n/Dockerfile'
-  #     - './n8n'
-  #   id: 'build-n8n'
+  # Build Image 2
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}'
+      - '-f'
+      - 'n8n/Dockerfile'
+      - './n8n'
+    id: 'build-n8n'
 
   # Build Image 3
   - name: 'gcr.io/cloud-builders/docker'
@@ -49,13 +49,13 @@ steps:
     id: 'browser-use'
     waitFor: ['build-browser-use']
 
-  # # Push Image 2 to Artifact Registry
-  # - name: 'gcr.io/cloud-builders/docker'
-  #   args:
-  #     - 'push'
-  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}'
-  #   id: 'push-n8n'
-  #   waitFor: ['build-n8n']
+  # Push Image 2 to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}'
+    id: 'push-n8n'
+    waitFor: ['build-n8n']
 
   # Push Image 3 to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
