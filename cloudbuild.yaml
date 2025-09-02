@@ -72,51 +72,92 @@ steps:
     id: 'push-planner-backend'
     waitFor: ['build-planner-backend']
 
-  - name: gcr.io/cloud-builders/gcloud
-    id: render-service
-    entrypoint: bash
+  # Update service.yaml with new image tags
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
     args:
-    - -c
-    - |
-      set -euo pipefail
-      mkdir -p render
-      sed -i "s|{{IMG_BROWSER_USE}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}|g" service.yaml
-      IMG_N8N="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}"
-      IMG_PLANNER_ADK="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}"
-      IMG_PLANNER_BACKEND="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend:${SHORT_SHA}"
+      - '-c'
+      - |
+        # Replace image placeholders with actual image URLs 
+        sed -i "s|{{browser-use}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}|g" service.yaml
+        sed -i "s|{{n8n}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}|g" service.yaml
+        sed -i "s|{{planner-adk}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}|g" service.yaml
+        sed -i "s|{{'planner-backend'}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend:${SHORT_SHA}|g" service.yaml
+        
+        sed -i "s|{{SERVICE_NAME}}|${_SERVICE_NAME}|g" service.yaml
+        sed -i "s|{{BROWSER_PORT}}|${_BROWSER_PORT}|g" service.yaml
+        sed -i "s|{{N8N_PORT}}|${_SERVICE2_PORT}|g" service.yaml
+        sed -i "s|{{PLANNERADK_PORT}}|${_SERVICE3_PORT}|g" service.yaml
+        sed -i "s|{{PLANNERBACKEND_PORT}}|${_PLANNERBACKEND_PORT}|g" service.yaml
 
-      sed \
-        -e "s#{{IMG_BROWSER_USE}}#${IMG_BROWSER_USE}#g" \
-        -e "s#{{IMG_N8N}}#${IMG_N8N}#g" \
-        -e "s#{{IMG_PLANNER_ADK}}#${IMG_PLANNER_ADK}#g" \
-        -e "s#{{IMG_PLANNER_BACKEND}}#${IMG_PLANNER_BACKEND}#g" \
-        service.yaml > render/service.yaml
+        sed -i "s|{{BROWSER_MEMORY}}|${_SERVICE1_MEMORY}|g" service.yaml
+        sed -i "s|{{N8N_MEMORY}}|${_SERVICE2_MEMORY}|g" service.yaml
+        sed -i "s|{{PLANNERADK_MEMORY}}|${_SERVICE3_MEMORY}|g" service.yaml
+        sed -i "s|{{PLANNERBACKEND_MEMORY}}|${_SERVICE3_MEMORY}|g" service.yaml
 
-      echo "---- render/service.yaml ----"
-      cat render/service.yaml
-  # -------- Deploy the service (multi-container) --------
-  - name: gcr.io/cloud-builders/gcloud
-    id: deploy-service
-    waitFor:
-    - push-browser-use          
-    - push-n8n
-    - push-planner-adk
-    - push-planner-backend
-    - render-service
+        sed -i "s|{{BROWSER_CPU}}|${_SERVICE1_CPU}|g" service.yaml
+        sed -i "s|{{N8N_CPU}}|${_SERVICE2_CPU}|g" service.yaml
+        sed -i "s|{{PLANNERADK_CPU}}|${_SERVICE3_CPU}|g" service.yaml
+        sed -i "s|{{PLANNERBACKEND_CPU}}|${_SERVICE3_CPU}|g" service.yaml
+        
+        echo "Updated service.yaml:"
+        cat service.yaml
+    id: 'update-service-yaml'
+    waitFor: ['push-browser-use', 'push-n8n', 'push-planner-adk','push-planner-backend']
+
+  # Deploy multi-container service to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
     args:
-    - run
-    - services
-    - replace
-    - render/service.yaml
-    - --region=${_REGION}
+      - 'run'
+      - 'services'
+      - 'replace'
+      - 'service.yaml'
+      - '--region'
+      - '${_REGION}'
+    id: 'deploy-multicontainer-service'
+    waitFor: ['update-service-yaml']
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   id: 'deploy-browser-use'
+  #   entrypoint: gcloud
+  #   args:
+  #     - run
+  #     - deploy
+  #     - agentic-prior-cloud-run
+  #     - --image
+  #     - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}
+  #     - --platform
+  #     - managed
+  #     - --region
+  #     - us-central1
+substitutions:
+  
+  # Single service with multi-container configuration
+  _BROWSER_NAME: 'browser-agent'
+  _BROWSER_PORT: '8080'
+  _BROWSER_MEMORY: '512Mi'
+  _BROWSER_CPU: '1'
+  
+  # Service 2 configuration  
+  _N8N_NAME: 'n8n'
+  _N8N_PORT: '3000'
+  _N8N_MEMORY: '1Gi'
+  _N8N_CPU: '1'
+  
+  # Service 3 configuration
+  _PLANNERADK_NAME: 'planner-adk'
+  _PLANNERADK_PORT: '8000'
+  _PLANNERADK_MEMORY: '2Gi'
+  _PLANNERADK_CPU: '2'
+
+  # Service 3 configuration
+  _PLANNERBACKEND_NAME: 'planner-backend'
+  _PLANNERBACKEND_PORT: '8001'
+  _PLANNERBACKEND_MEMORY: '2Gi'
+  _PLANNERBACKEND_CPU: '2'
 
 logsBucket: 'agentic-prior-storage-bucket'
 options:
   logging: GCS_ONLY
-images:
-  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}'
-  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}'
-  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}'
-  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend:${SHORT_SHA}'
 
   
