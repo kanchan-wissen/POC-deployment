@@ -1,28 +1,26 @@
 FROM python:3.11-slim
-
-# Set working directory
+ 
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+ 
 WORKDIR /app
-
-# Copy requirements and install dependencies
+ 
+# deps
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application code
+ 
+# app
 COPY . .
-
-# Create logs directory
+ 
+# logs dir (optional)
 RUN mkdir -p logs
-
-# Expose port
+ 
+# app port
 EXPOSE 8001
-
-# Set environment variables
-ENV PYTHONPATH=/app
-ENV PYTHONUNBUFFERED=1
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-  CMD python -c "import requests; requests.get('http://host.docker.internal:8001/health')" || exit 1
-
-# Run the application
+ 
+# simple TCP healthcheck (no extra deps)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD python -c "import socket; s=socket.create_connection(('127.0.0.1',8001),3); s.close()"
+ 
+# since your main.py does uvicorn.run(...) under __main__, just run it
 CMD ["python", "main.py"]
