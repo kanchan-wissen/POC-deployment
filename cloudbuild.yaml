@@ -86,19 +86,19 @@ steps:
         
         sed -i "s|{{SERVICE_NAME}}|${_SERVICE_NAME}|g" service.yaml
         sed -i "s|{{BROWSER_PORT}}|${_BROWSER_PORT}|g" service.yaml
-        sed -i "s|{{N8N_PORT}}|${_SERVICE2_PORT}|g" service.yaml
-        sed -i "s|{{PLANNERADK_PORT}}|${_SERVICE3_PORT}|g" service.yaml
+        sed -i "s|{{N8N_PORT}}|${N8N_PORT}|g" service.yaml
+        sed -i "s|{{PLANNERADK_PORT}}|${_PLANNERADK_PORT}|g" service.yaml
         sed -i "s|{{PLANNERBACKEND_PORT}}|${_PLANNERBACKEND_PORT}|g" service.yaml
 
-        sed -i "s|{{BROWSER_MEMORY}}|${_SERVICE1_MEMORY}|g" service.yaml
-        sed -i "s|{{N8N_MEMORY}}|${_SERVICE2_MEMORY}|g" service.yaml
-        sed -i "s|{{PLANNERADK_MEMORY}}|${_SERVICE3_MEMORY}|g" service.yaml
-        sed -i "s|{{PLANNERBACKEND_MEMORY}}|${_SERVICE3_MEMORY}|g" service.yaml
+        sed -i "s|{{BROWSER_MEMORY}}|${_BROWSER_MEMORY}|g" service.yaml
+        sed -i "s|{{N8N_MEMORY}}|${_N8N_MEMORY}|g" service.yaml
+        sed -i "s|{{PLANNERADK_MEMORY}}|${_PLANNERADK_MEMORY}|g" service.yaml
+        sed -i "s|{{PLANNERBACKEND_MEMORY}}|${_PLANNERADK_MEMORY}|g" service.yaml
 
-        sed -i "s|{{BROWSER_CPU}}|${_SERVICE1_CPU}|g" service.yaml
-        sed -i "s|{{N8N_CPU}}|${_SERVICE2_CPU}|g" service.yaml
-        sed -i "s|{{PLANNERADK_CPU}}|${_SERVICE3_CPU}|g" service.yaml
-        sed -i "s|{{PLANNERBACKEND_CPU}}|${_SERVICE3_CPU}|g" service.yaml
+        sed -i "s|{{BROWSER_CPU}}|${_BROWSER_CPU}|g" service.yaml
+        sed -i "s|{{N8N_CPU}}|${_N8N_CPU}|g" service.yaml
+        sed -i "s|{{PLANNERADK_CPU}}|${_PLANNERADK_CPU}|g" service.yaml
+        sed -i "s|{{PLANNERBACKEND_CPU}}|${_PLANNERADK_CPU}|g" service.yaml
         
         echo "Updated service.yaml:"
         cat service.yaml
