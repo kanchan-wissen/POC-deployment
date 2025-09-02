@@ -82,7 +82,7 @@ steps:
         sed -i "s|{{browser-use}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}|g" service.yaml
         sed -i "s|{{n8n}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}|g" service.yaml
         sed -i "s|{{planner-adk}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}|g" service.yaml
-        sed -i "s|{{'planner-backend'}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend:${SHORT_SHA}|g" service.yaml
+        sed -i "s|{{planner-backend}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend:${SHORT_SHA}|g" service.yaml
         
         sed -i "s|{{SERVICE_NAME}}|${_SERVICE_NAME}|g" service.yaml
         sed -i "s|{{BROWSER_PORT}}|${_BROWSER_PORT}|g" service.yaml
