@@ -39,6 +39,8 @@ spec:
               value: "http://localhost:{{N8N_PORT}}"
             - name: PLANNERADK_URL
               value: "http://localhost:{{PLANNERADK_PORT}}"
+            - name: PLANNERBACKEND_URL
+              value: "http://localhost:{{PLANNERBACKEND_PORT}}"
           # Health check configuration
           livenessProbe:
             httpGet:
@@ -72,10 +74,12 @@ spec:
               value: "http://localhost:{{BROWSER_PORT}}"
             - name: PLANNERADK_URL
               value: "http://localhost:{{PLANNERADK_PORT}}"
+            - name: PLANNERBACKEND_URL
+              value: "http://localhost:{{PLANNERBACKEND_PORT}}"
 
         # Sidecar container 2 (PLANNERADK)
         - name: sidecar-PLANNERADK
-          image: {{PLANNERADK_IMAGE}}
+          image: {{planner-adk}}
           ports:
             - name: http3
               containerPort: {{PLANNERADK_PORT}}
@@ -92,9 +96,11 @@ spec:
               value: "http://localhost:{{BROWSER_PORT}}"
             - name: N8N_URL
               value: "http://localhost:{{N8N_PORT}}"
+            - name: PLANNERBACKEND_URL
+              value: "http://localhost:{{PLANNERBACKEND_PORT}}"
    # Sidecar container 2 (PLANNERADK)
         - name: sidecar-PLANNERBACKEND
-          image: {{PLANNERBACKEND_IMAGE}}
+          image: {{planner-backend}}
           ports:
             - name: http3
               containerPort: {{PLANNERBACKEND_PORT}}
@@ -110,4 +116,6 @@ spec:
             - name: MAIN_SERVICE_URL
               value: "http://localhost:{{BROWSER_PORT}}"
             - name: N8N_URL
+              value: "http://localhost:{{PLANNERADK_PORT}}"
+            - name: PLANNERADK_URL
               value: "http://localhost:{{PLANNERADK_PORT}}"
