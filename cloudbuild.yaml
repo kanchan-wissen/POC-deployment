@@ -80,7 +80,7 @@ steps:
     - |
       set -euo pipefail
       mkdir -p render
-
+      sed -i "s|{{IMG_BROWSER_USE}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}|g" service.yaml
       IMG_BROWSER_USE="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}"
       IMG_N8N="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}"
       IMG_PLANNER_ADK="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}"
