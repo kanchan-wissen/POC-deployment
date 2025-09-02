@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: .
-    image: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}
+    image: us-central1-docker.pkg.dev/agentic-ai-dev-wissen/agentic-prior-artifact-repository/browser-use:${SHORT_SHA}
     container_name: browser-use-api
     env_file: ./.env
     volumes:
