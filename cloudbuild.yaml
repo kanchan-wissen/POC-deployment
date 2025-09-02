@@ -1,89 +1,61 @@
 steps:
-  # - name: gcr.io/cloud-builders/docker
-  #   entrypoint: bash
-  #   args:
-  #   - -c
-  #   - |
-  #     gcloud auth configure-docker ${_REGION}-docker.pkg.dev --quiet
-  #   id: 'auth-docker'
-  # Build browser-use-dev
-  - name: 'docker/compose:1.29.2'
-    args: ['-f', 'docker-compose.yml', 'build']
-    dir: 'n8n'
-    id: 'n8n'
-    # Push browser-use image
-  # Push browser-use-dev
-  - name: 'docker/compose:1.29.2'
-    args: ['-f', 'docker-compose.yml', 'push']
-    dir: 'n8n'
-    id: 'push-n8n'
-    waitFor: ['n8n']
-  # # Build Image 1
-  # - name: 'docker/compose:1.26.2'
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service1:${SHORT_SHA}'
+      - '-f'
+      - 'browser-use-dev/Dockerfile'
+      - './browser-use-dev'
+    id: 'build-browser-use'
+
+  # # Build Image 2
+  # - name: 'gcr.io/cloud-builders/docker'
   #   args:
   #     - 'build'
-  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service1:${SHORT_SHA}'
-  #     - './browser-use-dev/docker-compose.yaml'
-  #     - './browser-use-dev'
-  #   id: 'build-browser-use'
+  #     - '-t'
+  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service2:${SHORT_SHA}'
+  #     - '-f'
+  #     - './service2/Dockerfile'
+  #     - './service2'
+  #   id: 'build-service2'
 
-#   # Build Image 2
-#   - name: 'docker/compose:1.26.2'
-#     args:
-#       - 'build'
-#       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service2:${SHORT_SHA}'
-#       - './n8n/docker-compose.yml'
-#       - './n8n'
-#     id: 'build-n8n'
+  # # Build Image 3
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args:
+  #     - 'build'
+  #     - '-t'
+  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
+  #     - '-f'
+  #     - './service3/Dockerfile'
+  #     - './service3'
+  #   id: 'build-service3'
 
-#   # Build Image 3
-#   - name: 'docker/compose:1.26.2'
-#     args:
-#       - 'build'
-#       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
-#       - './planner-adk/docker-compose.yml'
-#       - './planner-adk'
-#     id: 'build-planner-adk'
-#     # Build Image 3
-#   - name: 'docker/compose:1.26.2'
-#     args:
-#       - 'build'
-#       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
-#       - './planner-backend/docker-compose.yml'
-#       - './planner-backend'
-#     id: 'build-planner-backend'
+  # Push Image 1 to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service1:${SHORT_SHA}'
+    id: 'browser-use'
+    waitFor: ['build-browser-use']
 
-#   # Push Image 1 to Artifact Registry
-#   - name: 'docker/compose:1.26.2'
-#     args:
-#       - 'push'
-#       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service1:${SHORT_SHA}'
-#     id: 'push-browser-use'
-#     waitFor: ['build-browser-use']
+  # # Push Image 2 to Artifact Registry
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args:
+  #     - 'push'
+  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service2:${SHORT_SHA}'
+  #   id: 'push-service2'
+  #   waitFor: ['build-service2']
 
-#   # Push Image 2 to Artifact Registry
-#   - name: 'docker/compose:1.26.2'
-#     args:
-#       - 'push'
-#       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service2:${SHORT_SHA}'
-#     id: 'push-n8n'
-#     waitFor: ['build-n8n']
-
-#   # Push Image 3 to Artifact Registry
-#   - name: 'docker/compose:1.26.2'
-#     args:
-#       - 'push'
-#       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
-#     id: 'push-planner-adk'
-#     waitFor: ['build-planner-adk']
-#     # Push Image 3 to Artifact Registry
-#   - name: 'docker/compose:1.26.2'
-#     args:
-#       - 'push'
-#       - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
-#     id: 'push-planner-backend'
-#     waitFor: ['build-planner-backend']
+  # # Push Image 3 to Artifact Registry
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args:
+  #     - 'push'
+  #     - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/service3:${SHORT_SHA}'
+  #   id: 'push-service3'
+  #   waitFor: ['build-service3']
+logsBucket: 'agentic-prior-storage-bucket'
 options:
-  logging: CLOUD_LOGGING_ONLY
+  logging: GCS_ONLY
 
   
