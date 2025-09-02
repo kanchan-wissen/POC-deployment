@@ -1,3 +1,14 @@
+substitutions:
+  _SERVICE_NAME: agentic-prior-cloud-run
+  _TAG: ${SHORT_SHA}
+
+  # Image repos (no tag)
+  _IMG_BROWSER_USE: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use
+  _IMG_N8N: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n
+  _IMG_PLANNER_ADK: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk
+  _IMG_PLANNER_BACKEND: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend
+
+
 steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
@@ -81,10 +92,10 @@ steps:
       set -euo pipefail
       mkdir -p render
 
-      _IMG_BROWSER_USE="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}"
-      _IMG_N8N="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}"
-      _IMG_PLANNER_ADK="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}"
-      _IMG_PLANNER_BACKEND="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend:${SHORT_SHA}"
+      IMG_BROWSER_USE="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}"
+      IMG_N8N="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}"
+      IMG_PLANNER_ADK="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}"
+      IMG_PLANNER_BACKEND="${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend:${SHORT_SHA}"
 
       sed \
         -e "s#{{IMG_BROWSER_USE}}#${IMG_BROWSER_USE}#g" \
