@@ -79,26 +79,26 @@ steps:
       - '-c'
       - |
         # Replace image placeholders with actual image URLs 
-        sed -i "s|{{browser-use}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}|g" render/service.yaml
-        sed -i "s|{{n8n}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}|g" render/service.yaml
-        sed -i "s|{{planner-adk}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}|g" render/service.yaml
-        sed -i "s|{{planner-backend}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend:${SHORT_SHA}|g" render/service.yaml
+        sed -i "s|{{browser-use}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/browser-use:${SHORT_SHA}|g" service.yaml
+        sed -i "s|{{n8n}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/n8n:${SHORT_SHA}|g" service.yaml
+        sed -i "s|{{planner-adk}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}|g" service.yaml
+        sed -i "s|{{planner-backend}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend:${SHORT_SHA}|g" service.yaml
         
-        sed -i "s|{{SERVICE_NAME}}|${_SERVICE_NAME}|g" render/service.yaml
-        sed -i "s|{{BROWSER_PORT}}|${_BROWSER_PORT}|g" render/service.yaml
-        sed -i "s|{{N8N_PORT}}|${_N8N_PORT}|g" render/service.yaml
-        sed -i "s|{{PLANNERADK_PORT}}|${_PLANNERADK_PORT}|g" render/service.yaml
-        sed -i "s|{{PLANNERBACKEND_PORT}}|${_PLANNERBACKEND_PORT}|g" render/service.yaml
+        sed -i "s|{{SERVICE_NAME}}|${_SERVICE_NAME}|g" service.yaml
+        sed -i "s|{{BROWSER_PORT}}|${_BROWSER_PORT}|g" service.yaml
+        sed -i "s|{{N8N_PORT}}|${_N8N_PORT}|g" service.yaml
+        sed -i "s|{{PLANNERADK_PORT}}|${_PLANNERADK_PORT}|g" service.yaml
+        sed -i "s|{{PLANNERBACKEND_PORT}}|${_PLANNERBACKEND_PORT}|g" service.yaml
 
-        sed -i "s|{{BROWSER_MEMORY}}|${_BROWSER_MEMORY}|g" render/service.yaml
-        sed -i "s|{{N8N_MEMORY}}|${_N8N_MEMORY}|g" render/service.yaml
-        sed -i "s|{{PLANNERADK_MEMORY}}|${_PLANNERADK_MEMORY}|g" render/service.yaml
-        sed -i "s|{{PLANNERBACKEND_MEMORY}}|${_PLANNERADK_MEMORY}|g" render/service.yaml
+        sed -i "s|{{BROWSER_MEMORY}}|${_BROWSER_MEMORY}|g" service.yaml
+        sed -i "s|{{N8N_MEMORY}}|${_N8N_MEMORY}|g" service.yaml
+        sed -i "s|{{PLANNERADK_MEMORY}}|${_PLANNERADK_MEMORY}|g" service.yaml
+        sed -i "s|{{PLANNERBACKEND_MEMORY}}|${_PLANNERBACKEND_MEMORY}|g" service.yaml
 
-        sed -i "s|{{BROWSER_CPU}}|${_BROWSER_CPU}|g" render/service.yaml
-        sed -i "s|{{N8N_CPU}}|${_N8N_CPU}|g" render/service.yaml
-        sed -i "s|{{PLANNERADK_CPU}}|${_PLANNERADK_CPU}|g" render/service.yaml
-        sed -i "s|{{PLANNERBACKEND_CPU}}|${_PLANNERADK_CPU}|g" render/service.yaml
+        sed -i "s|{{BROWSER_CPU}}|${_BROWSER_CPU}|g" service.yaml
+        sed -i "s|{{N8N_CPU}}|${_N8N_CPU}|g" service.yaml
+        sed -i "s|{{PLANNERADK_CPU}}|${_PLANNERADK_CPU}|g" service.yaml
+        sed -i "s|{{PLANNERBACKEND_CPU}}|${_PLANNERADK_CPU}|g" service.yaml
         
         echo "Updated service.yaml:"
         cat service.yaml
@@ -112,7 +112,7 @@ steps:
       - 'run'
       - 'services'
       - 'replace'
-      - 'render/service.yaml'
+      - 'service.yaml'
       - '--region'
       - '${_REGION}'
     id: 'deploy-multicontainer-service'

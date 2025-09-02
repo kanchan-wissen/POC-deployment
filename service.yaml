@@ -54,11 +54,11 @@ spec:
             periodSeconds: 5
 
         # Sidecar container 1 (N8N)
-        - name: sidecar-N8N
+        - name: sidecar-n8n
           image: {{n8n}}
           ports:
             - name: http2
-              containerPort: {{N8N_PORT}}
+              containerPort: "{{N8N_PORT}}"
           resources:
             limits:
               memory: "{{N8N_MEMORY}}"
@@ -76,11 +76,11 @@ spec:
               value: "http://localhost:{{PLANNERBACKEND_PORT}}"
 
         # Sidecar container 2 (PLANNERADK)
-        - name: sidecar-PLANNERADK
+        - name: sidecar-planneradk
           image: {{planner-adk}}
           ports:
             - name: http3
-              containerPort: {{PLANNERADK_PORT}}
+              containerPort: "{{PLANNERADK_PORT}}"
           resources:
             limits:
               memory: "{{PLANNERADK_MEMORY}}"
@@ -97,23 +97,23 @@ spec:
             - name: PLANNERBACKEND_URL
               value: "http://localhost:{{PLANNERBACKEND_PORT}}"
    # Sidecar container 2 (PLANNERADK)
-        - name: sidecar-PLANNERBACKEND
+        - name: sidecar-plannerbackend
           image: {{planner-backend}}
           ports:
-            - name: http3
-              containerPort: {{PLANNERBACKEND_PORT}}
+            - name: http4
+              containerPort: "{{PLANNERBACKEND_PORT}}"
           resources:
             limits:
               memory: "{{PLANNERBACKEND_MEMORY}}"
               cpu: "{{PLANNERBACKEND_CPU}}"
           env:
             - name: SERVICE_TYPE
-              value: "sidecar3"
+              value: "sidecar"
             - name: PORT
-              value: "{{PLANNERADK_PORT}}"
+              value: "{{PLANNERBACKEND_PORT}}"
             - name: MAIN_SERVICE_URL
               value: "http://localhost:{{BROWSER_PORT}}"
             - name: N8N_URL
-              value: "http://localhost:{{PLANNERADK_PORT}}"
+              value: "http://localhost:{{N8N_PORT}}"
             - name: PLANNERADK_URL
               value: "http://localhost:{{PLANNERADK_PORT}}"
