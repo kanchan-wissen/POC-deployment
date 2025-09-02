@@ -46,13 +46,11 @@ spec:
             httpGet:
               path: /health
               port: {{BROWSER_PORT}}
-            initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /ready
               port: {{BROWSER_PORT}}
-            initialDelaySeconds: 5
             periodSeconds: 5
 
         # Sidecar container 1 (N8N)
@@ -63,8 +61,8 @@ spec:
               containerPort: {{N8N_PORT}}
           resources:
             limits:
-              memory: {{N8N_MEMORY}}
-              cpu: {{N8N_CPU}}
+              memory: "{{N8N_MEMORY}}"
+              cpu: "{{N8N_CPU}}"
           env:
             - name: SERVICE_TYPE
               value: "sidecar2"
@@ -85,8 +83,8 @@ spec:
               containerPort: {{PLANNERADK_PORT}}
           resources:
             limits:
-              memory: {{PLANNERADK_MEMORY}}
-              cpu: {{PLANNERADK_CPU}}
+              memory: "{{PLANNERADK_MEMORY}}"
+              cpu: "{{PLANNERADK_CPU}}"
           env:
             - name: SERVICE_TYPE
               value: "sidecar3"
@@ -106,8 +104,8 @@ spec:
               containerPort: {{PLANNERBACKEND_PORT}}
           resources:
             limits:
-              memory: {{PLANNERBACKEND_MEMORY}}
-              cpu: {{PLANNERBACKEND_CPU}}
+              memory: "{{PLANNERBACKEND_MEMORY}}"
+              cpu: "{{PLANNERBACKEND_CPU}}"
           env:
             - name: SERVICE_TYPE
               value: "sidecar3"
