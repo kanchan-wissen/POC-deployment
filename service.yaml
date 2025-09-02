@@ -1,113 +1,122 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: {{SERVICE_NAME}}
+  name: agentic-prior-cloud-run
   annotations:
     run.googleapis.com/execution-environment: gen2
-    run.googleapis.com/description: "Multi-container service with 4 applications"
+    run.googleapis.com/ingress: all
 spec:
   template:
     metadata:
       annotations:
-        run.googleapis.com/execution-environment: gen2
-        autoscaling.knative.dev/maxScale: "2"
         autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "2"
+        # Optional: keep CPU when idle (remove if not needed)
+        run.googleapis.com/cpu-throttling: "false"
     spec:
-      # Service timeout (maximum request duration)
-      timeoutSeconds: 300
-      
-      # Container concurrency (requests per instance)
-      containerConcurrency: 100
-      
+      # If you use a custom runtime SA, uncomment the next line and set it in your render step
+      # serviceAccountName: {{RUNTIME_SA}}
+
+      containerConcurrency: 80
+      timeoutSeconds: 600
+
+      # If containers need to share files, keep this; otherwise delete the volumes + mounts.
+      volumes:
+        - name: shared-tmp
+          emptyDir: {}
+
       containers:
-        # Main container (BROWSER) - receives external traffic
-        - name: main-service
-          image: {{browser-use}}
+        # ===================== PRIMARY: PLANNER-ADK (public entrypoint) =====================
+        - name: planner-adk
+          image: {{IMG_PLANNER_ADK}}
+          # Ensure the app listens on $PORT (Cloud Run sets PORT=8080 by default)
+          # If your app requires an explicit flag, uncomment the args line:
+          # args: ["--port=8080"]
           ports:
             - name: http1
-              containerPort: {{BROWSER_PORT}}
-          resources:
-            limits:
-              memory: {{BROWSER_MEMORY}}
-              cpu: {{BROWSER_CPU}}
+              containerPort: 8080
           env:
-            - name: SERVICE_TYPE
-              value: "main"
             - name: PORT
-              value: "{{BROWSER_PORT}}"
+              value: "8080"
+            # Internal URLs for sidecars (reachable via localhost)
             - name: N8N_URL
-              value: "http://localhost:{{N8N_PORT}}"
-            - name: PLANNERADK_URL
-              value: "http://localhost:{{PLANNERADK_PORT}}"
-          # Health check configuration
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: {{BROWSER_PORT}}
-            initialDelaySeconds: 30
-            periodSeconds: 10
+              value: "http://127.0.0.1:5678"
+            - name: PLANNER_BACKEND_URL
+              value: "http://127.0.0.1:9001"
+            - name: BROWSER_USE_URL
+              value: "http://127.0.0.1:9100"
+          volumeMounts:
+            - name: shared-tmp
+              mountPath: /shared
+          resources:
+            limits: { cpu: "1", memory: "1Gi" }
+          # Adjust these probes to your app's paths if different
           readinessProbe:
-            httpGet:
-              path: /ready
-              port: {{BROWSER_PORT}}
-            initialDelaySeconds: 5
+            httpGet: { path: /healthz, port: 8080 }
             periodSeconds: 5
+            failureThreshold: 12
+          startupProbe:
+            httpGet: { path: /startup, port: 8080 }
+            periodSeconds: 5
+            failureThreshold: 30
 
-        # Sidecar container 1 (N8N)
-        - name: sidecar-N8N
-          image: {{N8N_IMAGE}}
+        # ===================== SIDECAR: N8N =====================
+        - name: n8n
+          image: {{IMG_N8N}}
+          # args: ["n8n","start"]   # uncomment if your image needs it
           ports:
-            - name: http2
-              containerPort: {{N8N_PORT}}
-          resources:
-            limits:
-              memory: {{N8N_MEMORY}}
-              cpu: {{N8N_CPU}}
+            - name: n8n
+              containerPort: 5678
           env:
-            - name: SERVICE_TYPE
-              value: "sidecar2"
-            - name: PORT
-              value: "{{N8N_PORT}}"
-            - name: MAIN_SERVICE_URL
-              value: "http://localhost:{{BROWSER_PORT}}"
-            - name: PLANNERADK_URL
-              value: "http://localhost:{{PLANNERADK_PORT}}"
+            - name: N8N_PORT
+              value: "5678"
+          volumeMounts:
+            - name: shared-tmp
+              mountPath: /shared
+          resources:
+            limits: { cpu: "1", memory: "512Mi" }
+          # If n8n doesn't expose a health endpoint, remove this probe
+          readinessProbe:
+            httpGet: { path: /healthz, port: 5678 }
+            periodSeconds: 10
+            failureThreshold: 18
 
-        # Sidecar container 2 (PLANNERADK)
-        - name: sidecar-PLANNERADK
-          image: {{PLANNERADK_IMAGE}}
+        # ===================== SIDECAR: PLANNER-BACKEND =====================
+        - name: planner-backend
+          image: {{IMG_PLANNER_BACKEND}}
+          # If your backend is hardcoded to 8080, either change the app to honor $PORT
+          # or keep it at 8080 but DO NOT expose http1 here. We'll use 9001 internally:
+          # args: ["--port=9001"]   # uncomment if your binary/entrypoint accepts it
           ports:
-            - name: http3
-              containerPort: {{PLANNERADK_PORT}}
-          resources:
-            limits:
-              memory: {{PLANNERADK_MEMORY}}
-              cpu: {{PLANNERADK_CPU}}
+            - name: backend
+              containerPort: 9001
           env:
-            - name: SERVICE_TYPE
-              value: "sidecar3"
             - name: PORT
-              value: "{{PLANNERADK_PORT}}"
-            - name: MAIN_SERVICE_URL
-              value: "http://localhost:{{BROWSER_PORT}}"
-            - name: N8N_URL
-              value: "http://localhost:{{N8N_PORT}}"
-   # Sidecar container 2 (PLANNERADK)
-        - name: sidecar-PLANNERBACKEND
-          image: {{PLANNERBACKEND_IMAGE}}
+              value: "9001"
+          volumeMounts:
+            - name: shared-tmp
+              mountPath: /shared
+          resources:
+            limits: { cpu: "1", memory: "512Mi" }
+          # Update/remove if you don't have a health path
+          readinessProbe:
+            httpGet: { path: /healthz, port: 9001 }
+            periodSeconds: 5
+            failureThreshold: 12
+
+        # ===================== SIDECAR: BROWSER-USE (browser-agent) =====================
+        - name: browser-use
+          image: {{IMG_BROWSER_USE}}
+          # args: ["--port=9100"]   # uncomment if needed
           ports:
-            - name: http3
-              containerPort: {{PLANNERBACKEND_PORT}}
-          resources:
-            limits:
-              memory: {{PLANNERBACKEND_MEMORY}}
-              cpu: {{PLANNERBACKEND_CPU}}
+            - name: browser
+              containerPort: 9100
           env:
-            - name: SERVICE_TYPE
-              value: "sidecar3"
             - name: PORT
-              value: "{{PLANNERADK_PORT}}"
-            - name: MAIN_SERVICE_URL
-              value: "http://localhost:{{BROWSER_PORT}}"
-            - name: N8N_URL
-              value: "http://localhost:{{PLANNERADK_PORT}}"
+              value: "9100"
+          resources:
+            limits: { cpu: "1", memory: "512Mi" }
+          readinessProbe:
+            httpGet: { path: /healthz, port: 9100 }
+            periodSeconds: 5
+            failureThreshold: 12
