@@ -36,6 +36,12 @@ spec:
           env:
             - name: SERVICE_TYPE
               value: "planner-adk"
+            - name: N8N_URL
+              value: "http://localhost:{{N8N_PORT}}"
+            - name: BROWSER_URL
+              value: "http://localhost:{{BROWSER_PORT}}"
+            - name: PLANNERBACKEND_URL
+              value: "http://localhost:{{PLANNERBACKEND_PORT}}"
             - name: DEBUG_MODE
               value: "true"
           # Health check configuration
@@ -49,3 +55,38 @@ spec:
               port: "{{PLANNERADK_PORT}}"
             periodSeconds: 2
             failureThreshold: 180
+            # Sidecar container 1 (N8N)
+        - name: sidecar-n8n
+          image: {{n8n}}
+          resources:
+            limits:
+              memory: "{{N8N_MEMORY}}"
+              cpu: "{{N8N_CPU}}"
+          env:
+            - name: SERVICE_TYPE
+              value: "n8n"
+            - name: N8N_PORT
+              value: "{{N8N_PORT}}"
+        # Sidecar container 2 (BROWSER)
+        - name: sidecar-browser-use
+          image: {{browser-use}}
+          resources:
+            limits:
+              memory: "{{BROWSER_MEMORY}}"
+              cpu: "{{BROWSER_CPU}}"
+          env:
+            - name: SERVICE_TYPE
+              value: "browser-use"
+            - name: BROWSER_PORT
+              value: "{{BROWSER_PORT}}"
+        - name: sidecar-plannerbackend
+          image: {{planner-backend}}
+          resources:
+            limits:
+              memory: "{{PLANNERBACKEND_MEMORY}}"
+              cpu: "{{PLANNERBACKEND_CPU}}"
+          env:
+            - name: SERVICE_TYPE
+              value: "plannerbackend"
+            - name: PLANNERBACKEND_PORT
+              value: "{{PLANNERBACKEND_PORT}}"
