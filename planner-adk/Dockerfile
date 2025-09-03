@@ -23,5 +23,5 @@ EXPOSE 8080
 #   CMD python -c "import socket,sys; s=socket.socket(); s.settimeout(3); s.connect(('0.0.0.0',8001)); s.close()"
  
 # IMPORTANT: correct JSON-form CMD
-CMD ["sh","-c","python","-m","uvicorn","main:app","--host","0.0.0.0","--port",${PORT:-8080},"--proxy-headers"]
+CMD ["python","-m","uvicorn","main:app","--host","0.0.0.0","--port","8080","--proxy-headers"]
  
