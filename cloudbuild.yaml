@@ -46,7 +46,6 @@
     id: 'deploy-multicontainer-service'
     waitFor: ['update-service-yaml']
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    id: get-service-url
     entrypoint: bash
     args:
     - -c
@@ -56,8 +55,8 @@
         --format="value(status.url)")
       echo "SERVICE_URL=${URL}"
       echo -n "${URL}" > service_url.txt
+    id: get-service-url
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    id: allow-unauth
     args:
     - run
     - services
@@ -66,6 +65,7 @@
     - --region=${_REGION}
     - --member=allUsers
     - --role=roles/run.invoker
+    id: allow-unauth
   waitFor: ['get-service-url']
   substitutions:
     _PLANNERADK_NAME: 'planner-adk'
