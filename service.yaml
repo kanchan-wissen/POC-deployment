@@ -12,9 +12,10 @@ spec:
         run.googleapis.com/execution-environment: gen2
         autoscaling.knative.dev/maxScale: "2"
         autoscaling.knative.dev/minScale: "1"
+        run.googleapis.com/startup-cpu-boost: "true"
     spec:
       # Service timeout (maximum request duration)
-      timeoutSeconds: 300
+      timeoutSeconds: 3600
       
       # Container concurrency (requests per instance)
       containerConcurrency: 100
@@ -29,26 +30,15 @@ spec:
             limits:
               memory: "{{PLANNERADK_MEMORY}}"
               cpu: "{{PLANNERADK_CPU}}"
+            requests:
+              memory: "1Gi"
+              cpu: "0.5"
           env:
             - name: SERVICE_TYPE
               value: "planner-adk"
-            - name: N8N_URL
-              value: "http://localhost:{{N8N_PORT}}"
-            - name: BROWSER_URL
-              value: "http://localhost:{{BROWSER_PORT}}"
-            - name: PLANNERBACKEND_URL
-              value: "http://localhost:{{PLANNERBACKEND_PORT}}"
-          # Health check configuration
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: "{{PLANNERADK_PORT}}"
-            periodSeconds: 100
-          startupProbe:
-            tcpSocket:
-              port: "{{PLANNERADK_PORT}}"
-            periodSeconds: 2
-            failureThreshold: 180
+            - name: DEBUG_MODE
+              value: "true"
+
             # Sidecar container 1 (N8N)
         - name: sidecar-n8n
           image: {{n8n}}
