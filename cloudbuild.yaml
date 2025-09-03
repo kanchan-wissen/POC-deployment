@@ -41,6 +41,8 @@
       - 'service.yaml'
       - '--region'
       - '${_REGION}'
+      - --platform
+      - managed
     id: 'deploy-multicontainer-service'
     waitFor: ['update-service-yaml']
   substitutions:
