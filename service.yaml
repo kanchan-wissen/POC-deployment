@@ -25,11 +25,11 @@ spec:
           image: {{browser-use}}
           ports:
             - name: http1
-              containerPort: {{BROWSER_PORT}}
+              containerPort: "{{BROWSER_PORT}}"
           resources:
             limits:
-              memory: {{BROWSER_MEMORY}}
-              cpu: {{BROWSER_CPU}}
+              memory: "{{BROWSER_MEMORY}}"
+              cpu: "{{BROWSER_CPU}}"
           env:
             - name: SERVICE_TYPE
               value: "main"
@@ -45,12 +45,12 @@ spec:
           livenessProbe:
             httpGet:
               path: /health
-              port: {{BROWSER_PORT}}
+              port: "{{BROWSER_PORT}}"
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /ready
-              port: {{BROWSER_PORT}}
+              port: "{{BROWSER_PORT}}"
             periodSeconds: 5
 
         # Sidecar container 1 (N8N)

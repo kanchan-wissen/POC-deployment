@@ -131,12 +131,11 @@ steps:
   #     - --region
   #     - us-central1
 substitutions:
-  
   # Single service with multi-container configuration
-  _BROWSER_NAME: 'browser-agent'
-  _BROWSER_PORT: '8080'
-  _BROWSER_MEMORY: '512Mi'
-  _BROWSER_CPU: '1'
+  _BROWSER_NAME: "browser-agent"
+  _BROWSER_PORT: "8080"
+  _BROWSER_MEMORY: "512Mi"
+  _BROWSER_CPU: "1"
   
   # Service 2 configuration  
   _N8N_NAME: 'n8n'
