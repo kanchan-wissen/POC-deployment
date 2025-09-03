@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # app
 COPY . .
  
-# EXPOSE 8002
+EXPOSE 8080
  
 # optional: nicer shutdowns
 # STOPSIGNAL SIGINT
