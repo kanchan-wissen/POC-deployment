@@ -45,12 +45,12 @@ spec:
             httpGet:
               path: /health
               port: "{{PLANNERADK_PORT}}"
-            periodSeconds: 10
-          # readinessProbe:
-          #   httpGet:
-          #     path: /ready
-          #     port: "{{PLANNERADK_PORT}}"
-          #   periodSeconds: 5
+            periodSeconds: 100
+          startupProbe:
+            tcpSocket:
+              port: "{{PLANNERADK_PORT}}"
+            periodSeconds: 2
+            failureThreshold: 180
             # Sidecar container 1 (N8N)
         - name: sidecar-n8n
           image: {{n8n}}
