@@ -46,11 +46,11 @@ spec:
               path: /health
               port: "{{PLANNERADK_PORT}}"
             periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: "{{PLANNERADK_PORT}}"
-            periodSeconds: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /ready
+          #     port: "{{PLANNERADK_PORT}}"
+          #   periodSeconds: 5
             # Sidecar container 1 (N8N)
         - name: sidecar-n8n
           image: {{n8n}}
