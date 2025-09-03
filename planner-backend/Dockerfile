@@ -18,9 +18,9 @@ RUN mkdir -p logs
 # app port
 EXPOSE 8001
  
-# simple TCP healthcheck (no extra deps)
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD python -c "import socket; s=socket.create_connection(('127.0.0.1',8001),3); s.close()"
+# # simple TCP healthcheck (no extra deps)
+# HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+#   CMD python -c "import socket; s=socket.create_connection(('127.0.0.1',8001),3); s.close()"
  
 # since your main.py does uvicorn.run(...) under __main__, just run it
 CMD ["python", "main.py"]

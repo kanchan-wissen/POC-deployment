@@ -1,0 +1,66 @@
+  # Build Image 3
+  steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}'
+      - '-f'
+      - 'planner-adk/Dockerfile'
+      - './planner-adk'
+    id: 'build-planner-adk'
+  # Push Image 3 to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}'
+    id: 'push-planner-adk'
+    waitFor: ['build-planner-adk']
+    # Update service.yaml with new image tags
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        sed -i "s|{{planner-adk}}|${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}|g" service.yaml
+        sed -i "s|{{SERVICE_NAME}}|${_SERVICE_NAME}|g" service.yaml
+        sed -i "s|{{PLANNERADK_PORT}}|${_PLANNERADK_PORT}|g" service.yaml
+        sed -i "s|{{PLANNERADK_MEMORY}}|${_PLANNERADK_MEMORY}|g" service.yaml
+        sed -i "s|{{PLANNERADK_CPU}}|${_PLANNERADK_CPU}|g" service.yaml        
+        echo "Updated service.yaml:"
+        cat service.yaml
+    id: 'update-service-yaml'
+    waitFor: ['push-planner-adk']
+  # Deploy multi-container service to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'services'
+      - 'replace'
+      - 'service.yaml'
+      - '--region'
+      - '${_REGION}'
+      - --platform
+      - managed
+    id: 'deploy-multicontainer-service'
+    waitFor: ['update-service-yaml']
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: 'gcloud'
+    args:
+      - run
+      - services
+      - add-iam-policy-binding
+      - ${_SERVICE_NAME}
+      - --region=${_REGION}
+      - --member=allUsers
+      - --role=roles/run.invoker
+    id: allow-unauth
+  substitutions:
+    _PLANNERADK_NAME: 'planner-adk'
+    _PLANNERADK_PORT: '8080'
+    _PLANNERADK_MEMORY: '2Gi'
+    _PLANNERADK_CPU: '1'
+  logsBucket: 'agentic-prior-storage-bucket'
+  options:
+    logging: GCS_ONLY
