@@ -65,12 +65,12 @@ spec:
               value: "n8n"
             - name: PORT
               value: "{{N8N_PORT}}"
-            - name: MAIN_SERVICE_URL
-              value: "http://localhost:{{BROWSER_PORT}}"
-            - name: PLANNERADK_URL
-              value: "http://localhost:{{PLANNERADK_PORT}}"
-            - name: PLANNERBACKEND_URL
-              value: "http://localhost:{{PLANNERBACKEND_PORT}}"
+            # - name: MAIN_SERVICE_URL
+            #   value: "http://localhost:{{BROWSER_PORT}}"
+            # - name: PLANNERADK_URL
+            #   value: "http://localhost:{{PLANNERADK_PORT}}"
+            # - name: PLANNERBACKEND_URL
+            #   value: "http://localhost:{{PLANNERBACKEND_PORT}}"
         # Sidecar container 2 (BROWSER)
         - name: sidecar-browser-use
           image: {{browser-use}}
@@ -85,12 +85,12 @@ spec:
               value: "browser-use"
             - name: PORT
               value: "{{BROWSER_PORT}}"
-            - name: MAIN_SERVICE_URL
-              value: "http://localhost:{{PLANNERADK_PORT}}"
-            - name: N8N_URL
-              value: "http://localhost:{{N8N_PORT}}"
-            - name: PLANNERBACKEND_URL
-              value: "http://localhost:{{PLANNERBACKEND_PORT}}"
+            # - name: MAIN_SERVICE_URL
+            #   value: "http://localhost:{{PLANNERADK_PORT}}"
+            # - name: N8N_URL
+            #   value: "http://localhost:{{N8N_PORT}}"
+            # - name: PLANNERBACKEND_URL
+            #   value: "http://localhost:{{PLANNERBACKEND_PORT}}"
               # Sidecar container 3 (PLANNERBACKEND)
         - name: sidecar-plannerbackend
           image: {{planner-backend}}
@@ -105,9 +105,9 @@ spec:
               value: "plannerbackend"
             - name: PORT
               value: "{{PLANNERBACKEND_PORT}}"
-            - name: MAIN_SERVICE_URL
-              value: "http://localhost:{{BROWSER_PORT}}"
-            - name: N8N_URL
-              value: "http://localhost:{{N8N_PORT}}"
-            - name: PLANNERADK_URL
-              value: "http://localhost:{{PLANNERADK_PORT}}"
+            # - name: MAIN_SERVICE_URL
+            #   value: "http://localhost:{{BROWSER_PORT}}"
+            # - name: N8N_URL
+            #   value: "http://localhost:{{N8N_PORT}}"
+            # - name: PLANNERADK_URL
+            #   value: "http://localhost:{{PLANNERADK_PORT}}"
