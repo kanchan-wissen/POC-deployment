@@ -28,7 +28,7 @@ spec:
           resources:
             limits:
               memory: "{{PLANNERADK_PORT}}"
-              cpu: {{PLANNERADK_CPU}}
+              cpu: "{{PLANNERADK_CPU}}"
           env:
             - name: SERVICE_TYPE
               value: "planner-adk"
