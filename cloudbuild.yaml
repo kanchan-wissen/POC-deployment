@@ -133,7 +133,7 @@ steps:
 substitutions:
   # Single service with multi-container configuration
   _BROWSER_NAME: "browser-agent"
-  _BROWSER_PORT: "8080"
+  _BROWSER_PORT: "8000"
   _BROWSER_MEMORY: "512Mi"
   _BROWSER_CPU: "1"
   
@@ -145,7 +145,7 @@ substitutions:
   
   # Service 3 configuration
   _PLANNERADK_NAME: 'planner-adk'
-  _PLANNERADK_PORT: '8000'
+  _PLANNERADK_PORT: '8080'
   _PLANNERADK_MEMORY: '2Gi'
   _PLANNERADK_CPU: '1'
 
