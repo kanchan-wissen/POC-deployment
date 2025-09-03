@@ -46,27 +46,16 @@
     id: 'deploy-multicontainer-service'
     waitFor: ['update-service-yaml']
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    entrypoint: bash
+    entrypoint: 'gcloud'
     args:
-    - -c
-    - |
-      set -euo pipefail
-      URL=$(gcloud run services describe "${_SERVICE_NAME}" --region "${_REGION}" \
-        --format="value(status.url)")
-      echo "SERVICE_URL=${URL}"
-      echo -n "${URL}" > service_url.txt
-    id: get-service-url
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    args:
-    - run
-    - services
-    - add-iam-policy-binding
-    - ${_SERVICE_NAME}
-    - --region=${_REGION}
-    - --member=allUsers
-    - --role=roles/run.invoker
+      - run
+      - services
+      - add-iam-policy-binding
+      - ${_SERVICE_NAME}
+      - --region=${_REGION}
+      - --member=allUsers
+      - --role=roles/run.invoker
     id: allow-unauth
-    waitFor: ['get-service-url']
   substitutions:
     _PLANNERADK_NAME: 'planner-adk'
     _PLANNERADK_PORT: '8080'
