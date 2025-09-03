@@ -9,12 +9,13 @@
       - 'planner-adk/Dockerfile'
       - './planner-adk'
     id: 'build-planner-adk'
+  # Push Image 3 to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
-        - 'push'
-        - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-backend:${SHORT_SHA}'
-    id: 'push-planner-backend'
-    waitFor: ['build-planner-backend']
+      - 'push'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/planner-adk:${SHORT_SHA}'
+    id: 'push-planner-adk'
+    waitFor: ['build-planner-adk']
     # Update service.yaml with new image tags
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
