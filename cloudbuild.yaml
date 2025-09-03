@@ -134,7 +134,7 @@ substitutions:
   # Single service with multi-container configuration
   _BROWSER_NAME: "browser-agent"
   _BROWSER_PORT: "8000"
-  _BROWSER_MEMORY: '2Gi''
+  _BROWSER_MEMORY: '2Gi'
   _BROWSER_CPU: "1"
   
   # Service 2 configuration  
