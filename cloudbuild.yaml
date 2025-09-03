@@ -150,7 +150,7 @@ substitutions:
   
   # Service 2 configuration  
   _N8N_NAME: 'n8n'
-  _N8N_PORT: '5678'
+  _N8N_PORT: '3000'
   _N8N_MEMORY: '1Gi'
   _N8N_CPU: '1'
   

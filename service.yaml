@@ -65,8 +65,12 @@ spec:
           env:
             - name: SERVICE_TYPE
               value: "n8n"
+            - name: N8N_HOST
+              value: "0.0.0.0"
             - name: N8N_PORT
               value: "{{N8N_PORT}}"
+            - name: GENERIC_TIMEZONE
+              value: "Asia/Kolkata"
         # Sidecar container 2 (BROWSER)
         - name: sidecar-browser-use
           image: {{browser-use}}
