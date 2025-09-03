@@ -4,7 +4,7 @@ metadata:
   name: {{SERVICE_NAME}}
   annotations:
     run.googleapis.com/execution-environment: gen2
-    run.googleapis.com/description: "Multi-container service with 4 applications"
+    run.googleapis.com/description: "Multi-container service with 4 images"
 spec:
   template:
     metadata:
@@ -18,46 +18,43 @@ spec:
       
       # Container concurrency (requests per instance)
       containerConcurrency: 100
-      
       containers:
-        # Main container (BROWSER) - receives external traffic
+        # Main container (planner-adk) - receives external traffic
         - name: main-service
-          image: {{browser-use}}
+          image: {{planner-adk}}
           ports:
             - name: http1
-              containerPort: "{{BROWSER_PORT}}"
+              containerPort: "{{PLANNERADK_PORT}}"
           resources:
             limits:
-              memory: "{{BROWSER_MEMORY}}"
-              cpu: "{{BROWSER_CPU}}"
+              memory: "{{PLANNERADK_PORT}}"
+              cpu: {{PLANNERADK_CPU}}
           env:
             - name: SERVICE_TYPE
-              value: "main"
+              value: "planner-adk"
             - name: PORT
-              value: "{{BROWSER_PORT}}"
+              value: "{{PLANNERADK_PORT}}"
             - name: N8N_URL
               value: "http://localhost:{{N8N_PORT}}"
-            - name: PLANNERADK_URL
-              value: "http://localhost:{{PLANNERADK_PORT}}"
+            - name: BROWSER_URL
+              value: "http://localhost:{{BROWSER_PORT}}"
             - name: PLANNERBACKEND_URL
               value: "http://localhost:{{PLANNERBACKEND_PORT}}"
           # Health check configuration
           livenessProbe:
             httpGet:
               path: /health
-              port: "{{BROWSER_PORT}}"
+              port: "{{PLANNERADK_PORT}}"
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /ready
-              port: "{{BROWSER_PORT}}"
+              port: "{{PLANNERADK_PORT}}"
             periodSeconds: 5
-
-        # Sidecar container 1 (N8N)
+            # Sidecar container 1 (N8N)
         - name: sidecar-n8n
           image: {{n8n}}
           ports:
-            - name: http2
               containerPort: "{{N8N_PORT}}"
           resources:
             limits:
@@ -65,7 +62,7 @@ spec:
               cpu: "{{N8N_CPU}}"
           env:
             - name: SERVICE_TYPE
-              value: "sidecar2"
+              value: "n8n"
             - name: PORT
               value: "{{N8N_PORT}}"
             - name: MAIN_SERVICE_URL
@@ -74,33 +71,30 @@ spec:
               value: "http://localhost:{{PLANNERADK_PORT}}"
             - name: PLANNERBACKEND_URL
               value: "http://localhost:{{PLANNERBACKEND_PORT}}"
-
-        # Sidecar container 2 (PLANNERADK)
-        - name: sidecar-planneradk
-          image: {{planner-adk}}
+        # Sidecar container 2 (BROWSER)
+        - name: sidecar-browser-use
+          image: {{browser-use}}
           ports:
-            - name: http3
-              containerPort: "{{PLANNERADK_PORT}}"
+              containerPort: "{{BROWSER_PORT}}"
           resources:
             limits:
-              memory: "{{PLANNERADK_MEMORY}}"
-              cpu: "{{PLANNERADK_CPU}}"
+              memory: "{{BROWSER_MEMORY}}"
+              cpu: "{{BROWSER_CPU}}"
           env:
             - name: SERVICE_TYPE
-              value: "sidecar3"
+              value: "browser-use"
             - name: PORT
-              value: "{{PLANNERADK_PORT}}"
+              value: "{{BROWSER_PORT}}"
             - name: MAIN_SERVICE_URL
-              value: "http://localhost:{{BROWSER_PORT}}"
+              value: "http://localhost:{{PLANNERADK_PORT}}"
             - name: N8N_URL
               value: "http://localhost:{{N8N_PORT}}"
             - name: PLANNERBACKEND_URL
               value: "http://localhost:{{PLANNERBACKEND_PORT}}"
-   # Sidecar container 2 (PLANNERADK)
+              # Sidecar container 3 (PLANNERBACKEND)
         - name: sidecar-plannerbackend
           image: {{planner-backend}}
           ports:
-            - name: http4
               containerPort: "{{PLANNERBACKEND_PORT}}"
           resources:
             limits:
@@ -108,7 +102,7 @@ spec:
               cpu: "{{PLANNERBACKEND_CPU}}"
           env:
             - name: SERVICE_TYPE
-              value: "sidecar"
+              value: "plannerbackend"
             - name: PORT
               value: "{{PLANNERBACKEND_PORT}}"
             - name: MAIN_SERVICE_URL
