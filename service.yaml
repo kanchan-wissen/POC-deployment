@@ -27,19 +27,19 @@ spec:
               containerPort: "{{PLANNERADK_PORT}}"
           resources:
             limits:
-              memory: "{{PLANNERADK_PORT}}"
+              memory: "{{PLANNERADK_MEMORY}}"
               cpu: "{{PLANNERADK_CPU}}"
           env:
             - name: SERVICE_TYPE
               value: "planner-adk"
             - name: PORT
               value: "{{PLANNERADK_PORT}}"
-            # - name: N8N_URL
-            #   value: "http://localhost:{{N8N_PORT}}"
-            # - name: BROWSER_URL
-            #   value: "http://localhost:{{BROWSER_PORT}}"
-            # - name: PLANNERBACKEND_URL
-            #   value: "http://localhost:{{PLANNERBACKEND_PORT}}"
+            - name: N8N_URL
+              value: "http://localhost:{{N8N_PORT}}"
+            - name: BROWSER_URL
+              value: "http://localhost:{{BROWSER_PORT}}"
+            - name: PLANNERBACKEND_URL
+              value: "http://localhost:{{PLANNERBACKEND_PORT}}"
           # Health check configuration
           livenessProbe:
             httpGet:
@@ -54,8 +54,6 @@ spec:
             # Sidecar container 1 (N8N)
         - name: sidecar-n8n
           image: {{n8n}}
-          ports:
-              containerPort: "{{N8N_PORT}}"
           resources:
             limits:
               memory: "{{N8N_MEMORY}}"
@@ -63,8 +61,8 @@ spec:
           env:
             - name: SERVICE_TYPE
               value: "n8n"
-            # - name: PORT
-            #   value: "{{N8N_PORT}}"
+            - name: PORT
+              value: "{{N8N_PORT}}"
             # - name: MAIN_SERVICE_URL
             #   value: "http://localhost:{{BROWSER_PORT}}"
             # - name: PLANNERADK_URL
@@ -74,8 +72,6 @@ spec:
         # Sidecar container 2 (BROWSER)
         - name: sidecar-browser-use
           image: {{browser-use}}
-          ports:
-              containerPort: "{{BROWSER_PORT}}"
           resources:
             limits:
               memory: "{{BROWSER_MEMORY}}"
@@ -83,8 +79,8 @@ spec:
           env:
             - name: SERVICE_TYPE
               value: "browser-use"
-            # - name: PORT
-            #   value: "{{BROWSER_PORT}}"
+            - name: PORT
+              value: "{{BROWSER_PORT}}"
             # - name: MAIN_SERVICE_URL
             #   value: "http://localhost:{{PLANNERADK_PORT}}"
             # - name: N8N_URL
@@ -94,8 +90,6 @@ spec:
               # Sidecar container 3 (PLANNERBACKEND)
         - name: sidecar-plannerbackend
           image: {{planner-backend}}
-          ports:
-              containerPort: "{{PLANNERBACKEND_PORT}}"
           resources:
             limits:
               memory: "{{PLANNERBACKEND_MEMORY}}"
@@ -103,8 +97,8 @@ spec:
           env:
             - name: SERVICE_TYPE
               value: "plannerbackend"
-            # - name: PORT
-            #   value: "{{PLANNERBACKEND_PORT}}"
+            - name: PORT
+              value: "{{PLANNERBACKEND_PORT}}"
             # - name: MAIN_SERVICE_URL
             #   value: "http://localhost:{{BROWSER_PORT}}"
             # - name: N8N_URL

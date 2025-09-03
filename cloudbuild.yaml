@@ -147,13 +147,13 @@ substitutions:
   _PLANNERADK_NAME: 'planner-adk'
   _PLANNERADK_PORT: '8000'
   _PLANNERADK_MEMORY: '2Gi'
-  _PLANNERADK_CPU: '2'
+  _PLANNERADK_CPU: '1'
 
   # Service 3 configuration
   _PLANNERBACKEND_NAME: 'planner-backend'
   _PLANNERBACKEND_PORT: '8001'
   _PLANNERBACKEND_MEMORY: '2Gi'
-  _PLANNERBACKEND_CPU: '2'
+  _PLANNERBACKEND_CPU: '1'
 
 logsBucket: 'agentic-prior-storage-bucket'
 options:
