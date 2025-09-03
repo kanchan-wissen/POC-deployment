@@ -32,8 +32,8 @@ spec:
           env:
             - name: SERVICE_TYPE
               value: "planner-adk"
-            - name: PORT
-              value: "{{PLANNERADK_PORT}}"
+            # - name: PORT
+            #   value: "{{PLANNERADK_PORT}}"
             - name: N8N_URL
               value: "http://localhost:{{N8N_PORT}}"
             - name: BROWSER_URL
@@ -61,7 +61,7 @@ spec:
           env:
             - name: SERVICE_TYPE
               value: "n8n"
-            - name: PORT
+            - name: N8N_PORT
               value: "{{N8N_PORT}}"
             # - name: MAIN_SERVICE_URL
             #   value: "http://localhost:{{BROWSER_PORT}}"
@@ -79,7 +79,7 @@ spec:
           env:
             - name: SERVICE_TYPE
               value: "browser-use"
-            - name: PORT
+            - name: BROWSER_PORT
               value: "{{BROWSER_PORT}}"
             # - name: MAIN_SERVICE_URL
             #   value: "http://localhost:{{PLANNERADK_PORT}}"
@@ -97,7 +97,7 @@ spec:
           env:
             - name: SERVICE_TYPE
               value: "plannerbackend"
-            - name: PORT
+            - name: PLANNERBACKEND_PORT
               value: "{{PLANNERBACKEND_PORT}}"
             # - name: MAIN_SERVICE_URL
             #   value: "http://localhost:{{BROWSER_PORT}}"
