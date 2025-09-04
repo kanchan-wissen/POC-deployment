@@ -56,21 +56,16 @@ spec:
             periodSeconds: 2
             failureThreshold: 180
             # Sidecar container 1 (N8N)
-        - name: sidecar-n8n
-          image: {{n8n}}
-          resources:
-            limits:
-              memory: "{{N8N_MEMORY}}"
-              cpu: "{{N8N_CPU}}"
+        - name: n8n
+          image: n8nio/n8n:latest
           env:
-            - name: SERVICE_TYPE
-              value: "n8n"
-            - name: N8N_HOST
-              value: "0.0.0.0"
             - name: N8N_PORT
               value: "{{N8N_PORT}}"
-            - name: GENERIC_TIMEZONE
-              value: "Asia/Kolkata"
+            - name: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
+              value: "true"
+              readinessProbe:
+              tcpSocket:
+              port: "{{N8N_PORT}}"
         # Sidecar container 2 (BROWSER)
         - name: sidecar-browser-use
           image: {{browser-use}}
