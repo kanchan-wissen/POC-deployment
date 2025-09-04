@@ -51,6 +51,8 @@ spec:
               port: "{{PLANNERADK_PORT}}"
             periodSeconds: 100
           startupProbe:
+            tcpSocket:
+              port: "{{PLANNERADK_PORT}}"
             periodSeconds: 2
             failureThreshold: 180
             # Sidecar container 1 (N8N)
