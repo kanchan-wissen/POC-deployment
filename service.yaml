@@ -51,8 +51,6 @@ spec:
               port: "{{PLANNERADK_PORT}}"
             periodSeconds: 100
           startupProbe:
-            tcpSocket:
-              port: "{{PLANNERADK_PORT}}"
             periodSeconds: 2
             failureThreshold: 180
             # Sidecar container 1 (N8N)
@@ -63,9 +61,6 @@ spec:
               value: "{{N8N_PORT}}"
             - name: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
               value: "true"
-              readinessProbe:
-              tcpSocket:
-              port: "{{N8N_PORT}}"
         # Sidecar container 2 (BROWSER)
         - name: sidecar-browser-use
           image: {{browser-use}}
